@@ -137,6 +137,27 @@ def remove_plate(yaml_dict):
         return None
 
 
+def microscope(yaml_dict):
+    """
+    get argument for microscope
+    this is optional, so if not present then return None
+
+    Parameters:
+    -----------
+    yaml_dict: dict
+        dictionary version of the config yaml file
+
+    Returns:
+    --------
+    dictionary
+    """
+    if "microscope" in yaml_dict:
+        microscope_arg = yaml_dict["microscope"]
+        return {"microscope": microscope}
+    else:
+        return None
+
+
 def create_commands(yaml_dict):
     """
     get arguments for Job.create_commands
@@ -203,7 +224,8 @@ def check_yaml_args(yaml_dict):
                   "location",
                   "commands location",
                   "remove plate",
-                  "add plate"]
+                  "add plate",
+                  "microscope"]
     bad_arguments = []
     for argument in yaml_dict.keys():
         if argument not in valid_args:
@@ -243,3 +265,4 @@ def parse_config_file(config_file):
                   remove_plate_args=remove_plate(yaml_dict),
                   add_plate_args=add_plate(yaml_dict),
                   create_command_args=create_commands(yaml_dict))
+
