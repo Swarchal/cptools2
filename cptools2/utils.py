@@ -2,6 +2,7 @@ import os
 import collections
 import random
 
+
 def make_dir(directory):
     """
     sensible way to create directory
@@ -122,22 +123,6 @@ def sanitise_filename(filename):
     string
     """
     return filename.replace(" ", "\ ")
-
-
-def on_staging_node():
-    """
-    Determine if this is being run on a staging node or not.
-    Checks whether it can access IGMM's datastore
-
-    Returns:
-    ---------
-    Boolean
-    """
-    try:
-        _ = os.listdir("/exports/igmm/datastore")
-        return True
-    except OSError:
-        return False
 
 
 def make_executable(filepath):

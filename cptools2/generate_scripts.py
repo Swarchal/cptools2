@@ -78,16 +78,6 @@ def lines_in_commands(commands_location):
     return _lines_in_commands(**command_paths)
 
 
-def load_module_text():
-    """returns load module commands"""
-    return textwrap.dedent(
-        """
-        module load anaconda/5.0.0.1
-        source activate cellprofiler
-        """
-    )
-
-
 def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
     """
     Create and save qsub submission scripts in the same location as the
@@ -143,7 +133,6 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
         memory="12G",
         output=os.path.join(logfile_location, "analysis")
     )
-    analysis_script += load_module_text()
     analysis_script.loop_through_file(cmd_path["cp_commands"])
     analysis_loc = os.path.join(commands_location,
                                 "{}_analysis_script.sh".format(time_now))
