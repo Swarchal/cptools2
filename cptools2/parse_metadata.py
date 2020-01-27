@@ -49,52 +49,16 @@ class MetadataParser(object):
             raise ValueError(err_msg.format(valid_microscopes))
         self.microscope = microscope_mapper[microscope.lower()]
         self.parse_func = parser_mapper[self.microscope]
-
-    @staticmethod
-    def parse_ix(x):
-        output = namedtuple(
-            "ImageXpress",
-            ["well", "row", "column", "site", "plate", "z", "channel", "path"]
-        )
-        well = os.path.basename(x).split("_")[1]
-        row = self.get_row(well)
-        column = self.get_column(well)
-        site = int("".join(i for i in os.path.basename(x).split("_")[2] if i.isdigit()))
-        plate = x.split(os.sep)[-4]
-        z = 1 # non-confocal ImageXpress
-        channel = int(x.split("_")[3][1])
-        return output(well, row, column, site, plate, z, channel, x)
-
-    @staticmethod
-    def parse_yokogawa(x):
-        output = namedtuple(
-            "Yokogawa",
-            ["well", "row", "column", "site", "plate", "z", "channel", "path"]
-        )
-        final_path = os.path.basename(x)
-        plate, well, rest = final_path.split("_")
-        row = self.get_row(well)
-        column = self.get_column(well)
-        site = int(rest[6:9])
-        z = int(rest[16:18])
-        channel = int(rest[-2:])
-        return output(well, row, column, site, plate, z, channel, x)
-
-    @staticmethod
-    def parse_opera(x):
-        output = namedtuple(
-            "Opera",
-            ["well", "row", "column", "site", "plate", "z", "channel", "path"]
-        )
-        final_path = os.path.basename(x)
-        row = int(final_path[1:3])
-        column = int(final_path[4:6])
-        well = self.row_column_to_well(row, column)
-        site = int(final_path.split("-")[1])
-        plate = x.split(os.sep)[-2]
-        z = int(finalpath[13:15])
-        channel = int(final_path.replace(".tif", "")[16:])
-        return output(well, row, column, site, plate, z, channel, x)
+        self.metadata_names = [
+            "Metadata_well",
+            "Metadata_row",
+            "Metadata_column",
+            "Metadata_site",
+            "Metadata_plate",
+            "Metadata_z",
+            "Metadata_channel",
+            "path"
+        ]
 
     @staticmethod
     def get_row(well_str):
@@ -108,6 +72,40 @@ class MetadataParser(object):
     def row_column_to_well(row, column):
         letters = string.ascii_uppercase
         return "{}{:02d}".format(letters[row-1], column)
+
+    def parse_ix(self, x):
+        output = namedtuple("ImageXpress", self.metadata_names)
+        well = os.path.basename(x).split("_")[1]
+        row = self.get_row(well)
+        column = self.get_column(well)
+        site = int("".join(i for i in os.path.basename(x).split("_")[2] if i.isdigit()))
+        plate = x.split(os.sep)[-4]
+        z = 1 # non-confocal ImageXpress
+        channel = int(x.split("_")[3][1])
+        return output(well, row, column, site, plate, z, channel, x)
+
+    def parse_yokogawa(x):
+        output = namedtuple("Yokogawa", self.metadata_names)
+        final_path = os.path.basename(x)
+        plate, well, rest = final_path.split("_")
+        row = self.get_row(well)
+        column = self.get_column(well)
+        site = int(rest[6:9])
+        z = int(rest[16:18])
+        channel = int(rest[-2:])
+        return output(well, row, column, site, plate, z, channel, x)
+
+    def parse_opera(x):
+        output = namedtuple("Opera", self.metadata_names)
+        final_path = os.path.basename(x)
+        row = int(final_path[1:3])
+        column = int(final_path[4:6])
+        well = self.row_column_to_well(row, column)
+        site = int(final_path.split("-")[1])
+        plate = x.split(os.sep)[-2]
+        z = int(finalpath[13:15])
+        channel = int(final_path.replace(".tif", "")[16:])
+        return output(well, row, column, site, plate, z, channel, x)
 
     def parse_filepath(self, filepath):
         """generic extract metadata from filepath"""

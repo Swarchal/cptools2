@@ -6,26 +6,27 @@ import textwrap
 
 import pandas as _pd
 from cptools2 import utils
-from parserix import parse as _parse
+from cptools2 import parse_metadata
 
 
-def create_loaddata(img_list):
+def create_loaddata(img_list, microscope):
     """
     create a dataframe suitable for cellprofilers LoadData module
 
     Parameters:
     -----------
     img_list: list
+    microscope: str
 
     Returns:
     --------
     pandas DataFrame
     """
-    df_long = create_long_loaddata(img_list)
+    df_long = create_long_loaddata(img_list, microscope)
     return cast_dataframe(df_long)
 
 
-def create_long_loaddata(img_list):
+def create_long_loaddata(img_list, microscope):
     """
     create a dataframe of image paths with metadata columns
 
@@ -33,21 +34,15 @@ def create_long_loaddata(img_list):
     -----------
     img_list: list
         list of image paths
+    microscope: str
+        which microscope, needed to parse metadata from filepaths
 
     Returns:
     --------
     pandas DataFrame
     """
-    just_filenames = [_parse.img_filename(i) for i in img_list]
-    df_img = _pd.DataFrame({
-        "URL"               : just_filenames,
-        "path"              : [_parse.path(i)        for i in img_list],
-        "Metadata_platename": [_parse.plate_name(i)  for i in img_list],
-        "Metadata_well"     : [_parse.img_well(i)    for i in just_filenames],
-        "Metadata_site"     : [_parse.img_site(i)    for i in just_filenames],
-        "Metadata_channel"  : [_parse.img_channel(i) for i in just_filenames],
-        "Metadata_platenum" : [_parse.plate_num(i)   for i in img_list]
-        })
+    parser = parse_metadata.MetadataParser(microscope)
+    df_img = _pd.DataFrame(parser.parse_filepath_list(img_list))
     return df_img
 
 
@@ -68,8 +63,15 @@ def cast_dataframe(dataframe, check_nan=True):
     """
     n_channels = len(set(dataframe.Metadata_channel))
     wide_df = dataframe.pivot_table(
-        index=["Metadata_site", "Metadata_well", "Metadata_platenum",
-               "Metadata_platename", "path"],
+        index=[
+            "Metadata_well",
+            "Metadata_row",
+            "Metadata_column",
+            "Metadata_site",
+            "Metadata_plate",
+            "Metadata_z",
+            "path"
+        ],
         columns="Metadata_channel",
         values="URL",
         aggfunc="first").reset_index()
