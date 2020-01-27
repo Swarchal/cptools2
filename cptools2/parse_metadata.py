@@ -3,6 +3,7 @@ module docstring
 """
 
 import os
+import string
 from collections import namedtuple
 
 
