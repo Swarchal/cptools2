@@ -84,7 +84,7 @@ class MetadataParser(object):
         channel = int(x.split("_")[3][1])
         return output(well, row, column, site, plate, z, channel, x)
 
-    def parse_yokogawa(x):
+    def parse_yokogawa(self, x):
         output = namedtuple("Yokogawa", self.metadata_names)
         final_path = os.path.basename(x)
         plate, well, rest = final_path.split("_")
@@ -95,7 +95,7 @@ class MetadataParser(object):
         channel = int(rest[-2:])
         return output(well, row, column, site, plate, z, channel, x)
 
-    def parse_opera(x):
+    def parse_opera(self, x):
         output = namedtuple("Opera", self.metadata_names)
         final_path = os.path.basename(x)
         row = int(final_path[1:3])
