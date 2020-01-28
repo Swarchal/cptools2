@@ -1,8 +1,8 @@
 import pandas as _pd
-from parserix import parse as _parse
+from cptools2 import parse_metadata
 
 
-def _well_site_table(img_list):
+def _well_site_table(img_list, microscope):
     """
     parse metadata from image paths and return a pandas dataframe
     of image_path and metadata columns
@@ -11,17 +11,18 @@ def _well_site_table(img_list):
     -----------
     img_list: list
         list of image paths
+    microscope: string
+        type of microscope the images come from
 
     Returns:
     --------
     pandas DataFrame of img_paths and Metadata_well, Metadata_site columns
     """
-    final_files = [_parse.img_filename(i) for i in img_list]
-    df_img = _pd.DataFrame({
-        "img_paths"     : img_list,
-        "Metadata_well" : [_parse.img_well(i) for i in final_files],
-        "Metadata_site" : [_parse.img_site(i) for i in final_files]
-        })
+    parser = parse_metadata.MetadataParser(microscope)
+    df_img = _pd.DataFrame(
+        parser.parse_filepath_list(img_list)
+    )
+    df_img = df_img[["path", "Metadata_well", "Metadata_site"]]
     return df_img
 
 
@@ -41,7 +42,7 @@ def _group_images(df_img):
     """
     grouped_list = []
     for _, group in  df_img.groupby(["Metadata_well", "Metadata_site"]):
-        grouped = list(group["img_paths"])
+        grouped = list(group["path"])
         channel_nums = [_parse.img_channel(i) for i in grouped]
         # create tuple (path, channel_number) and sort by channel number
         sort_im = sorted(list(zip(grouped, channel_nums)), key=lambda x: x[1])
@@ -70,7 +71,7 @@ def chunks(list_like, job_size):
         yield list_like[i:i+job_size]
 
 
-def split(img_list, job_size=96):
+def split(img_list, job_size=96, microscope="imagexpress"):
     """
     split imagelist into an imagelist per job containing job_size images
 
@@ -84,6 +85,6 @@ def split(img_list, job_size=96):
     --------
     list of dataframes
     """
-    df_img = _well_site_table(img_list)
+    df_img = _well_site_table(img_list, microscope)
     grouped_list = _group_images(df_img)
     return [chunk for chunk in chunks(grouped_list, job_size)]

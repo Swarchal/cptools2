@@ -1,7 +1,6 @@
 import glob
 import os
 
-import parserix
 from cptools2 import utils
 
 
@@ -27,7 +26,7 @@ def files_from_plate(plate_dir, ext=".tif", clean=True, truncate=True,
         raise RuntimeError("'{}' is not a plate directory".format(plate_dir))
     files = glob.glob(plate_dir + "/*/*/*" + ext)
     if clean is True:
-        files = parserix.clean.clean(file_list=files, ext=ext)
+        files = clean_filelist(filelist=files, ext=ext)
     if truncate is True:
         # get the last 4 directories including final file
         # sorry
@@ -66,3 +65,12 @@ def paths_to_plates(experiment_directory):
     else:
         err_msg = "'{}' directory not found".format(exp_abs_path)
         raise RuntimeError(err_msg)
+
+
+def clean_filelist(filelist, ext=".tif"):
+    new_filelist = []
+    for i in filelist:
+        if i.endswith(ext) and "thumb" not in i:
+            new_filelist.append(i)
+    return new_filelist
+

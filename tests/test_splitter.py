@@ -5,7 +5,7 @@ from cptools2 import filelist
 
 # need to have an image list
 CURRENT_PATH = os.path.dirname(__file__)
-TEST_PATH = os.path.join(CURRENT_PATH, "example_dir")
+TEST_PATH = os.path.join(CURRENT_PATH, "example_dir_ix")
 TEST_PATH_PLATE_1 = os.path.join(TEST_PATH, "test-plate-1")
 # just use a single plate
 IMG_LIST = filelist.files_from_plate(TEST_PATH_PLATE_1)

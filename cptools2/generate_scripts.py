@@ -8,7 +8,7 @@ import os
 import textwrap
 from datetime import datetime
 import yaml
-from scissorhands import script_generator
+from cptools2 import cookiecutter
 from cptools2 import utils
 from cptools2 import colours
 from cptools2.colours import pretty_print
@@ -106,7 +106,7 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
     time_now = str(time_now).replace(" ", "-")
     # append random hex to job names - this allows you to run multiple jobs
     # without the -hold_jid flags fron clashing
-    job_hex = script_generator.generate_random_hex()
+    job_hex = cookiecutter.generate_random_hex()
     n_tasks = commands_count_dict["cp_commands"]
     # FIXME: using AnalysisScript class for everything, due to the 
     #        {Staging, Destaging}Script class not having loop_through_file
@@ -125,7 +125,7 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
     stage_loc = os.path.join(commands_location,
                              "{}_staging_script.sh".format(time_now))
     stage_script.save(stage_loc)
-    analysis_script = script_generator.AnalysisScript(
+    analysis_script = cookiecutter.SGEScript(
         name="analysis_{}".format(job_hex),
         tasks=n_tasks,
         hold_jid_ad="staging_{}".format(job_hex),
@@ -224,24 +224,24 @@ def make_submit_script(commands_location, job_date):
     return save_location
 
 
-class BodgeScript(script_generator.AnalysisScript):
+class BodgeScript(cookiecutter.SGEScript):
     """
     Whilst trying to fix rsync issues with filepaths containing spaces,
     the rsync commands stopped working when called from `$SEED`, though
     will work if saved as a single command in a shell script, and then calling
     bash on that script.
 
-    So this class inherits scissorhands.script_generator.AnalsisScript, but
+    So this class inherits cookiecutter.SGEScript, but
     adds an extra method which should be used instead of .loop_through_file().
     """
 
     def __init__(self, *args, **kwargs):
-        script_generator.AnalysisScript.__init__(self, *args, **kwargs)
+        cookiecutter.SGEScript.__init__(self, *args, **kwargs)
 
     def bodge_array_loop(self, phase, input_file):
         """
         As a temporary fix (hopefully), this method can work instead of
-        scissorhands.script_generator.AnalysisScript.loop_through_file()
+        cookiecutter.SGEScript.loop_through_file()
 
         Parameters:
         -----------

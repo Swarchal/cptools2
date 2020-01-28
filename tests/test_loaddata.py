@@ -61,9 +61,9 @@ def test_create_loaddata_ix():
 # yoko
 ################################################################################
 
-TEST_PATH_YOKO = os.path.join(CURRENT_PATH, "example_dir_yoko")
-TEST_PATH_PLATE_1_YOKO = os.path.join(TEST_PATH_YOKO, "test-plate-1")
-IMG_LIST_YOKO = filelist.files_from_plate(TEST_PATH_PLATE_1_YOKO)
+#TEST_PATH_YOKO = os.path.join(CURRENT_PATH, "example_dir_yoko")
+#TEST_PATH_PLATE_1_YOKO = os.path.join(TEST_PATH_YOKO, "test-plate-1")
+#IMG_LIST_YOKO = filelist.files_from_plate(TEST_PATH_PLATE_1_YOKO)
 
 
 def test_create_long_loaddata_yoko():
@@ -82,9 +82,9 @@ def test_case_dataframe_yoko():
 # opera
 ################################################################################
 
-TEST_PATH_OPERA = os.path.join(CURRENT_PATH, "example_dir_opera")
-TEST_PATH_PLATE_1_OPERA = os.path.join(TEST_PATH_OPERA, "test-plate-1")
-IMG_LIST_OPERA = filelist.files_from_plate(TEST_PATH_PLATE_1_OPERA)
+#TEST_PATH_OPERA = os.path.join(CURRENT_PATH, "example_dir_opera")
+#TEST_PATH_PLATE_1_OPERA = os.path.join(TEST_PATH_OPERA, "test-plate-1")
+#IMG_LIST_OPERA = filelist.files_from_plate(TEST_PATH_PLATE_1_OPERA)
 
 
 def test_create_long_loaddata_opera():
