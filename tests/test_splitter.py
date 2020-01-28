@@ -8,20 +8,8 @@ CURRENT_PATH = os.path.dirname(__file__)
 TEST_PATH = os.path.join(CURRENT_PATH, "example_dir_ix")
 TEST_PATH_PLATE_1 = os.path.join(TEST_PATH, "test-plate-1")
 # just use a single plate
-IMG_LIST = filelist.files_from_plate(TEST_PATH_PLATE_1)
-
-def test_well_site_table():
-    """job_splitter._well_site_table(img_list)"""
-    output = splitter._well_site_table(IMG_LIST)
-    assert isinstance(output, pd.DataFrame)
-    # check the dataframe is the right size
-    # should have a row per image in image list and 3 columns
-    assert output.shape == (len(IMG_LIST), 3)
-    # need to short as for some unknown reason the order is being mixed up
-    # though doesn't matter as always use column names rather than index
-    assert sorted(output.columns.tolist()) == sorted(["img_paths",
-                                                      "Metadata_well",
-                                                      "Metadata_site"])
+IMG_LIST = filelist.files_from_plate(TEST_PATH_PLATE_1, clean=True)
+IMG_LIST = [i for i in IMG_LIST if i.endswith(".tif")]
 
 
 def test_group_images():

@@ -70,6 +70,19 @@ class MetadataParser(object):
         letters = string.ascii_uppercase
         return "{}{:02d}".format(letters[row-1], column)
 
+    def parse_channel(self, x):
+        """needed for the splitter functions which group by channel number"""
+        final_path = os.path.basename(x)
+        if self.microscope == "imagexpress":
+            return int(final_path.split("_")[3][1])
+        elif self.microscope == "yokogawa":
+            plate, well, rest = final_path.split("_")
+            return int(rest[-2:])
+        elif self.microscope == "opera":
+            channel = int(final_path.replace(".tif", "")[16:])
+        else:
+            raise RuntimeError()
+
     def parse_ix(self, x):
         final_path = os.path.basename(x)
         path = os.path.dirname(x)

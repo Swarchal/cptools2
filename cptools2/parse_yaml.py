@@ -27,7 +27,7 @@ def open_yaml(path_to_yaml):
     dictionary version of the yaml file
     """
     with open(path_to_yaml, "r") as f:
-        yaml_dict = yaml.load(f, Loader=yaml.FullLoader)
+        yaml_dict = yaml.load(f)
     return yaml_dict
 
 

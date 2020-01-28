@@ -2,7 +2,7 @@ import os
 from cptools2 import filelist
 
 CURRENT_PATH = os.path.dirname(__file__)
-TEST_PATH = os.path.join(CURRENT_PATH, "example_dir")
+TEST_PATH = os.path.join(CURRENT_PATH, "example_dir_ix")
 
 
 def test_files_from_plate():
