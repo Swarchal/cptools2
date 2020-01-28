@@ -1,5 +1,8 @@
 """
-module docstring
+Class for extracting simple plate metadata from the image filenames.
+
+author: Scott Warchal
+date: 2020-01-27
 """
 
 import os
@@ -15,22 +18,13 @@ class MetadataParser(object):
     `parse_filepath_list()`
     """
     def __init__(self, microscope):
-        valid_microscopes = [
-            "ix",
-            "imagexpress",
-            "imageexpress",
-            "yoko",
-            "yokogawa",
-            "cv8000",
-            "cv7000",
-            "opera",
-            "columbus",
-            "harmony"
-        ]
+        microscope = microscope.strip().lower()
         microscope_mapper = {
             "ix": "imagexpress",
             "imagexpress": "imagexpress",
             "imageexpress": "imagexpress",
+            "moldev": "imagexpress",
+            "moleculardevices": "imagexpress",
             "yoko": "yokogawa",
             "yokogawa": "yokogawa",
             "cv8000": "yokogawa",
@@ -44,10 +38,12 @@ class MetadataParser(object):
             "yokogawa": self.parse_yokogawa,
             "opera": self.parse_opera
         }
-        if microscope.lower() not in valid_microscopes:
-            err_msg = "unknown microscope, valid options = {}"
+        valid_microscopes = list(microscope_mapper.keys())
+        if microscope not in valid_microscopes:
+            err_msg = "unknown microscope, options = {}"
             raise ValueError(err_msg.format(valid_microscopes))
-        self.microscope = microscope_mapper[microscope.lower()]
+        # standardise microscope name
+        self.microscope = microscope_mapper[microscope]
         self.parse_func = parser_mapper[self.microscope]
         self.metadata_names = [
             "Metadata_well",
@@ -108,7 +104,7 @@ class MetadataParser(object):
         well = self.row_column_to_well(row, column)
         site = int(final_path.split("-")[1])
         plate = x.split(os.sep)[-2]
-        z = int(finalpath[13:15])
+        z = int(final_path[13:15])
         channel = int(final_path.replace(".tif", "")[16:])
         return output(well, row, column, site, plate, z, channel, path, final_path)
 
