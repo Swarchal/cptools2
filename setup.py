@@ -1,5 +1,11 @@
 from setuptools import setup
 
+
+def read_requirements():
+    with open("requirements.txt", "r") as f:
+        return [i.strip() for i in f.readlines()]
+
+
 setup(name="cptools2",
       version=0.1,
       url="https://github.com/swarchal/cptools2",
@@ -12,8 +18,4 @@ setup(name="cptools2",
       entry_points={
           "console_scripts": ["cptools2 = cptools2.__main__:main"]
           },
-      dependency_links=[
-            "https://github.com/carragherlab/parserix/tarball/master#egg=parserix-0.1",
-            "https://github.com/carragherlab/scissorhands/tarball/master#egg=scissorhands-0.1",
-      ],
-      install_requires=["pyyaml", "pandas>=0.16", "parserix>=0.1", "scissorhands>=0.1"])
+      install_requires=read_requirements())
