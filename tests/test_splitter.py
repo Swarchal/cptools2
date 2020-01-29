@@ -8,7 +8,8 @@ CURRENT_PATH = os.path.dirname(__file__)
 TEST_PATH = os.path.join(CURRENT_PATH, "example_dir_ix")
 TEST_PATH_PLATE_1 = os.path.join(TEST_PATH, "test-plate-1")
 # just use a single plate
-IMG_LIST = filelist.files_from_plate(TEST_PATH_PLATE_1, clean=True)
+filelister = filelist.Filelist("imagexpress")
+IMG_LIST = filelister.files_from_plate(TEST_PATH_PLATE_1)
 IMG_LIST = [i for i in IMG_LIST if i.endswith(".tif")]
 
 

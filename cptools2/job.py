@@ -14,12 +14,14 @@ class Job(object):
     de-stating commands for an SGE array job.
     """
 
-    def __init__(self):
+    def __init__(self, microscope="imagexpress"):
         self.exp_dir = None
         self.chunked = False
         self.plate_store = dict()
         self.loaddata_store = dict()
         self.has_loaddata = False
+        self.microscope = microscope
+        self.filelister = filelist.Filelist(microscope)
 
     def add_experiment(self, exp_dir):
         """
@@ -56,11 +58,11 @@ class Job(object):
         """
         if isinstance(plates, str):
             full_path = os.path.join(exp_dir, plates)
-            img_files = filelist.files_from_plate(full_path)
+            img_files = self.filelister.files_from_plate(full_path)
             self.plate_store[plates] = [full_path, img_files]
         elif isinstance(plates, list):
             full_path = [os.path.join(exp_dir, i) for i in plates]
-            img_files = [filelist.files_from_plate(plate) for plate in full_path]
+            img_files = [self.filelister.files_from_plate(plate) for plate in full_path]
             for idx, plate in enumerate(plates):
                 self.plate_store[plate] = [full_path[idx], img_files[idx]]
         else:
