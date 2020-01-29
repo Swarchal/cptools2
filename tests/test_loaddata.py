@@ -93,7 +93,6 @@ def test_cast_dataframe_yoko2():
     """cptools2.loaddata.cast_dataframe(dataframe)"""
     long_df = loaddata.create_long_loaddata(IMG_LIST_YOKO, microscope="yokogawa")
     wide_df = loaddata.cast_dataframe(long_df)
-    wide_df.to_csv("/home/swl_sur/loaddata_wide.csv", index=False)
     expected_cols = sorted(["Metadata_site",
                             "Metadata_row",
                             "Metadata_column",
