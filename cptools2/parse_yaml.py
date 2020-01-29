@@ -137,7 +137,7 @@ def remove_plate(yaml_dict):
         return None
 
 
-def microscope(yaml_dict):
+def get_microscope(yaml_dict):
     """
     get argument for microscope
     this is optional, so if not present then return None
@@ -153,7 +153,7 @@ def microscope(yaml_dict):
     """
     if "microscope" in yaml_dict:
         microscope_arg = yaml_dict["microscope"]
-        return {"microscope": microscope}
+        return {"microscope": microscope_arg}
     else:
         return None
 
@@ -252,17 +252,25 @@ def parse_config_file(config_file):
         config.remove_plate_args   : dict
         config.add_plate_args      : dict
         config.create_command_args : dict
+        config.microscope          : dict
     """
     yaml_dict = open_yaml(config_file)
     # check the arguments in the yaml file are recognised
     check_yaml_args(yaml_dict)
     # create namedtuple to store the configuration dictionaries
-    names = ["experiment_args", "chunk_args", "add_plate_args",
-             "remove_plate_args", "create_command_args"]
+    names = [
+        "experiment_args",
+        "chunk_args",
+        "add_plate_args",
+        "remove_plate_args",
+        "create_command_args",
+        "microscope"
+    ]
     config = namedtuple("config", names)
     return config(experiment_args=experiment(yaml_dict),
                   chunk_args=chunk(yaml_dict),
                   remove_plate_args=remove_plate(yaml_dict),
                   add_plate_args=add_plate(yaml_dict),
-                  create_command_args=create_commands(yaml_dict))
+                  create_command_args=create_commands(yaml_dict),
+                  microscope=get_microscope(yaml_dict))
 

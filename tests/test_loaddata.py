@@ -126,15 +126,15 @@ def test_case_dataframe_yoko():
 # filelister_opera = filelist.Filelist("opera")
 #IMG_LIST_OPERA = filelister_opera.files_from_plate(TEST_PATH_PLATE_1_OPERA)
 
-
-def test_create_long_loaddata_opera():
-    assert False
-
-
-def test_cast_dataframe_opera():
-    assert False
-
-
-def test_case_dataframe_opera():
-    assert False
+# TODO: sort if/when we need opera filepaths
+#def test_create_long_loaddata_opera():
+#    assert False
+#
+#
+#def test_cast_dataframe_opera():
+#    assert False
+#
+#
+#def test_case_dataframe_opera():
+#    assert False
 

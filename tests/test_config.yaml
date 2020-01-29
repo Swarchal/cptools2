@@ -11,3 +11,4 @@ chunk: 46
 pipeline: tests/example_pipeline.cppipe
 location: /example/location
 commands location: /home/user
+microscope: yokogawa

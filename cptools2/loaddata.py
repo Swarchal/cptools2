@@ -62,7 +62,6 @@ def cast_dataframe(dataframe, check_nan=True):
     pandas DataFrame
     """
     channels = sorted(list(set(dataframe.Metadata_channel)))
-    n_channels = len(set(dataframe.Metadata_channel))
     wide_df = dataframe.pivot_table(
         index=[
             "Metadata_well",

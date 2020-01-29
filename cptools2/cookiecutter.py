@@ -248,7 +248,7 @@ def get_user(user):
     elif on_the_cluster():
         return os.environ["USER"]
     else:
-        raise ScriptError(
+        raise UserError(
             "No argument given for 'user' and not running on "
             "the cluster, therefore unable to automatically "
             "detect the username"
@@ -321,4 +321,7 @@ class SubmissionError(Exception):
 
 
 class ScriptError(Exception):
+    pass
+
+class UserError(Exception):
     pass

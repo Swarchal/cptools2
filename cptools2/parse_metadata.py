@@ -77,7 +77,7 @@ class MetadataParser(object):
             return int(final_path.split("_")[3][1])
         elif self.microscope == "yokogawa":
             plate, well, rest = final_path.split("_")
-            return int(rest[-2:])
+            return int(rest.replace(".tif", "")[-2:])
         elif self.microscope == "opera":
             channel = int(final_path.replace(".tif", "")[16:])
         else:

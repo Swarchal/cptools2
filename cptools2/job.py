@@ -33,9 +33,9 @@ class Job(object):
             path to imageXpress experiment that contains plate sub-directories
         """
         self.exp_dir = exp_dir
-        plate_paths = filelist.paths_to_plates(exp_dir)
+        plate_paths = self.filelister.paths_to_plates(exp_dir)
         plate_names = [i.split(os.sep)[-1] for i in plate_paths]
-        img_files = [filelist.files_from_plate(p) for p in plate_paths]
+        img_files = [self.filelister.files_from_plate(p) for p in plate_paths]
         for idx, plate in enumerate(plate_names):
             self.plate_store[plate] = [plate_paths[idx], img_files[idx]]
 
@@ -96,7 +96,7 @@ class Job(object):
         """
         # for each image_list in the platestore, split into chunks of job_size
         for key in self.plate_store:
-            chunks = splitter.split(self.plate_store[key][1], job_size)
+            chunks = splitter.split(self.plate_store[key][1], job_size, self.microscope)
             self.plate_store[key][1] = chunks
         self.chunked = True
 
@@ -115,7 +115,7 @@ class Job(object):
                     # unnest channel groupings
                     # only there before chunking to keep images together
                     unnested = list(utils.flatten(chunk))
-                    df_loaddata = loaddata.create_loaddata(unnested)
+                    df_loaddata = loaddata.create_loaddata(unnested, self.microscope)
                     if index < len(img_list):
                         loaddata.check_dataframe_size(df_loaddata, job_size)
                     self.loaddata_store[key].append(df_loaddata)
