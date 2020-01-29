@@ -68,7 +68,7 @@ class Micro:
     @staticmethod
     def check_dir_exists(directory):
         if not os.path.isdir(directory):
-            raise RuntimeError("'{}' is not a plate directory".format(plate_dir))
+            raise RuntimeError("'{}' is not a plate directory".format(directory))
 
 
 class ImageXpress(Micro):
