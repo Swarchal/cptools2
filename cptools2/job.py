@@ -178,29 +178,8 @@ class Job(object):
                 # write loaddata csv to disk
                 commands.write_loaddata(name=name, location=location,
                                         dataframe=dataframe)
-                # write filelist to disk
-                commands.write_filelist(img_list=img_list,
-                                        filelist_name=filelist_name)
-                # append rsync commands
-                rsync_cmnd = commands.make_rsync_cmnd(plate_loc=plate_loc,
-                                                      filelist_name=filelist_name,
-                                                      img_location=img_location)
-                rsync_commands.append(rsync_cmnd)
-                # make and append rm command
-                rm_cmd = commands.rm_string(directory=img_location)
-                rm_commands.append(rm_cmd)
         # write commands to disk as a txt file
         pretty_print("creating image filelist")
         pretty_print("creating csv files for LoadData")
-        pretty_print("creating staging commands")
         pretty_print("creating Cellprofiler commands")
-        pretty_print("creating destaging commands")
-        commands.write_commands(commands_location=commands_location,
-                                rsync_commands=rsync_commands,
-                                cp_commands=cp_commands,
-                                rm_commands=rm_commands)
-        # check commands files are not empty, raise an error if they are
-        names = ["staging", "cp_commands", "destaging"]
-        cmnds_files = [os.path.join(commands_location, name + ".txt") for name in names]
-        for cmnd_file in cmnds_files:
-            commands.check_commands(cmnd_file)
+        commands._write_single(commands_location, cp_commands, "cp_commands")

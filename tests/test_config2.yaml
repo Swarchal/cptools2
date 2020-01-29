@@ -1,6 +1,6 @@
 experiment : tests/example_dir_yoko/screen-name-batch1_20190213_095340
 chunk: 46
 pipeline: tests/example_pipeline.cppipe
-location: /home/swl_sur
-commands location: /home/swl_sur
+location: /home/swl_sur/cptools2_test
+commands location: /home/swl_sur/cptools2_test
 microscope: yokogawa

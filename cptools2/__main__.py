@@ -1,11 +1,12 @@
 import sys
 import os
+import textwrap
 from cptools2 import generate_scripts
 from cptools2 import job
 from cptools2 import parse_yaml
 from cptools2 import utils
 from cptools2 import colours
-from cptools2.colours import pretty_print
+from cptools2.colours import pretty_print, green
 
 
 def check_arguments():
@@ -76,6 +77,12 @@ def make_scripts(config_file):
 
 def main():
     """run cptools.job.Job on a yaml file containing arguments"""
+    print(green(textwrap.dedent("""\
+      ___ ___ _____ ___   ___  _    ___ ___
+     / __| _ \_   _/ _ \ / _ \| |  / __|_  )
+    | (__|  _/ | || (_) | (_) | |__\__ \/ /
+     \___|_|   |_| \___/ \___/|____|___/___|
+    """)))
     check_arguments()
     # parse yaml file into a dictionary
     config_file = check_config_file()
