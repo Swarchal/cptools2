@@ -112,7 +112,6 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
     #        {Staging, Destaging}Script class not having loop_through_file
     stage_script = BodgeScript(
         name="staging_{}".format(job_hex),
-        memory="1G",
         output=os.path.join(logfile_location, "staging"),
         tasks=commands_count_dict["staging"]
     )
@@ -130,7 +129,6 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
         tasks=n_tasks,
         hold_jid_ad="staging_{}".format(job_hex),
         pe="sharedmem 1",
-        memory="12G",
         output=os.path.join(logfile_location, "analysis")
     )
     analysis_script.loop_through_file(cmd_path["cp_commands"])
@@ -142,7 +140,6 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
     analysis_script.save(analysis_loc)
     destaging_script = BodgeScript(
         name="destaging_{}".format(job_hex),
-        memory="1G",
         hold_jid_ad="analysis_{}".format(job_hex),
         tasks=commands_count_dict["destaging"],
         output=os.path.join(logfile_location, "destaging")
