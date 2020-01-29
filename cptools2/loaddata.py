@@ -61,6 +61,7 @@ def cast_dataframe(dataframe, check_nan=True):
     --------
     pandas DataFrame
     """
+    channels = sorted(list(set(dataframe.Metadata_channel)))
     n_channels = len(set(dataframe.Metadata_channel))
     wide_df = dataframe.pivot_table(
         index=[
@@ -77,11 +78,11 @@ def cast_dataframe(dataframe, check_nan=True):
         aggfunc="first").reset_index()
     # rename FileName columns from 1, 2... to FileName_W1, FileName_W2 ...
     columns = {}
-    for i in range(1, n_channels+1):
+    for i in channels:
         columns[i] = "FileName_W{0}".format(str(i))
     wide_df.rename(columns=columns, inplace=True)
     # duplicate PathName for each channel
-    for i in range(1, n_channels+1):
+    for i in channels:
         wide_df["PathName_W" + str(i)] = wide_df.path
     wide_df.drop(["path"], axis=1, inplace=True)
     if check_nan is True:

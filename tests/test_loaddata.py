@@ -85,8 +85,15 @@ def test_cast_dataframe_yoko():
     assert isinstance(wide_df, pd.DataFrame)
     # check we have a row per imageset
     # FIXME: check how many rows we expect for the yokogawa plate
-    expected_rows = 60 * 6
+    expected_rows = 240 * 9
     assert wide_df.shape[0] == expected_rows
+
+
+def test_cast_dataframe_yoko2():
+    """cptools2.loaddata.cast_dataframe(dataframe)"""
+    long_df = loaddata.create_long_loaddata(IMG_LIST_YOKO, microscope="yokogawa")
+    wide_df = loaddata.cast_dataframe(long_df)
+    wide_df.to_csv("/home/swl_sur/loaddata_wide.csv", index=False)
     expected_cols = sorted(["Metadata_site",
                             "Metadata_row",
                             "Metadata_column",
@@ -94,11 +101,9 @@ def test_cast_dataframe_yoko():
                             "Metadata_well",
                             "Metadata_plate",
                             "FileName_W1",
-                            "FileName_W2",
                             "FileName_W3",
                             "FileName_W4",
                             "PathName_W1",
-                            "PathName_W2",
                             "PathName_W3",
                             "PathName_W4"])
     assert sorted(wide_df.columns.tolist()) == expected_cols
