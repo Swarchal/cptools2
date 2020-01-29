@@ -105,7 +105,7 @@ class MetadataParser(object):
         column = self.get_column(well)
         site = int(rest[6:9])
         z = int(rest[16:18])
-        channel = int(rest[-2:])
+        channel = int(rest.replace(".tif", "")[-2:])
         return output(well, row, column, site, plate, z, channel, path, final_path)
 
     def parse_opera(self, x):
