@@ -116,7 +116,7 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
     analysis_script += "\n"
     analysis_script += "module load jdk"
     analysis_script += "module load singularity"
-    analysis_script += 'CP_CONTAINER="HPC_projets/CPCB-AI/singularity_containers/cellprofiler_319.simg"'
+    analysis_script += 'CP_CONTAINER="/HPC_projets/CPCB-AI/singularity_containers/cellprofiler_319.simg"'
     analysis_script.loop_through_file(
         cmd_path["cp_commands"],
         prefix="singularity exec $CP_CONTAINER"
