@@ -55,26 +55,6 @@ def write_loaddata(name, location, dataframe, fix_paths=True):
     dataframe.to_csv(loaddata_name, index=False)
 
 
-def write_filelist(img_list, filelist_name):
-    """
-    write a filelist to disk
-
-    Parameters:
-    -----------
-    img_list: list
-        list of images
-    filelist_name: string
-        what to call the saved filelist
-
-    Returns:
-    --------
-    nothing, writes filelist to disk
-    """
-    with open(filelist_name, "w") as f:
-        for line in img_list:
-            f.write(line + "\n")
-
-
 def _write_single(commands_location, commands, final_name):
     """
     write commands for single command list
@@ -97,81 +77,6 @@ def _write_single(commands_location, commands, final_name):
     with open(cmnd_loc, "w") as outfile:
         for line in commands:
             outfile.write(line + "\n")
-
-
-def write_commands(commands_location, rsync_commands, cp_commands, rm_commands):
-    """
-    writes all commands, for stage, cp and destage commands
-
-    Parameters:
-    -----------
-    commands_location:
-        directory where to store the commands
-    rsync_commands: list
-        list of rsync commands
-    cp_commands: list
-        list of cellprofiler commands
-    rm_commands: list
-        list of destating/rm commands
-
-    Returns:
-    --------
-    nothing, writes three files to disk
-    """
-    commands = [rsync_commands, cp_commands, rm_commands]
-    names = ["staging", "cp_commands", "destaging"]
-    for command, name in zip(commands, names):
-        _write_single(commands_location, command, name)
-
-
-def make_rsync_cmnd(plate_loc, filelist_name, img_location):
-    """
-    Create rsync string pointing to a file-list and a destination
-    If the file-list is truncated, then source has to be the location of the
-    file-list so it forms a complete path.
-    Destination will include the entire path located in the file-list, therefore
-    truncation is recommended,
-    Desination can also begin with a directory that has not yet been created,
-    the directory will be created by the rsync command.
-    Escape characters will be added to spaces in filenames.
-
-    Parameters:
-    -----------
-    plate_loc: string
-        source destination of the plates in the ImageXpress directory
-    filelist_name: string
-        path to the filelist, this will be used with the --file-from flag
-    img_location: string
-        path to the directory in which to copy the file to in the rsync command
-
-    Returns:
-    --------
-    string: an rsync command
-    """
-    # NOTE: setting permissions with o+ means others have read/write/execution
-    #       access, not very secture but it's a temporary file which is going
-    #       to be deleted afterwards anyway.
-    return "rsync -s --perms --chmod=a+rwx --files-from=\"{filelist}\" \"{source}\" \"{destination}\""\
-        .format(filelist=filelist_name,
-                source=plate_loc,
-                destination=img_location)
-
-
-def rm_string(directory):
-    """
-    create string to remove job's data after successful run
-    NOTE DANGER ZONE!!!
-
-    Parameters:
-    -----------
-    directory: string
-        directory to delete
-
-    Returns:
-    --------
-    nothing, removes directory on disk
-    """
-    return "rm -rf \"{}\"".format(directory)
 
 
 def cp_command(pipeline, load_data, output_location):
@@ -237,3 +142,4 @@ def check_commands(location):
     err_msg = "Commands file '{}' is empty, something has gone wrong".format(location)
     if n_lines < 1:
         raise RuntimeError(err_msg)
+

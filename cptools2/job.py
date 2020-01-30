@@ -155,7 +155,7 @@ class Job(object):
         platenames = sorted(self.plate_store.keys())
         pretty_print("detected {} {}".format(
             colours.yellow(len(platenames)),
-            colours.purple("plates"))
+            colours.purple("plate(s)"))
         )
         for i, plate in enumerate(platenames, 1):
             print(colours.purple("\t {}.".format(i)), colours.yellow("{}".format(plate)))

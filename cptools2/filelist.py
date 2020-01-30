@@ -72,6 +72,7 @@ class Micro:
 
 
 class ImageXpress(Micro):
+    """ImageXpress specific filelist creator"""
     def __init__(self):
         super(ImageXpress, self).__init__()
 
@@ -100,6 +101,7 @@ class ImageXpress(Micro):
 
 
 class Yokogawa(Micro):
+    """Yokogawa CV8000 specific filelist creator"""
     def __init__(self):
         super(Yokogawa, self).__init__()
 
@@ -121,6 +123,7 @@ class Yokogawa(Micro):
 
 
 class Opera(Micro):
+    """Opera Phenix specific filelist creator"""
     def __init__(self):
         super(Opera, self).__init__()
 

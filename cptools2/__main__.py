@@ -16,7 +16,7 @@ def check_arguments():
         raise ValueError(msg)
 
 
-def check_config_file():
+def get_config_file():
     """check that the config file exists, raise an error if it doesnt"""
     config_file = sys.argv[1]
     if os.path.isfile(config_file) is False:
@@ -85,10 +85,11 @@ def main():
     """)))
     check_arguments()
     # parse yaml file into a dictionary
-    config_file = check_config_file()
+    config_file = get_config_file()
     pretty_print("parsing config file {}".format(colours.yellow(config_file)))
     config = parse_yaml.parse_config_file(config_file)
     configure_job(config)
+    pretty_print("creating SGE script")
     make_scripts(config_file)
     pretty_print("DONE!")
 
