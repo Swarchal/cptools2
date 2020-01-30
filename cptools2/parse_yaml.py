@@ -267,10 +267,13 @@ def parse_config_file(config_file):
         "microscope"
     ]
     config = namedtuple("config", names)
-    return config(experiment_args=experiment(yaml_dict),
-                  chunk_args=chunk(yaml_dict),
-                  remove_plate_args=remove_plate(yaml_dict),
-                  add_plate_args=add_plate(yaml_dict),
-                  create_command_args=create_commands(yaml_dict),
-                  microscope=get_microscope(yaml_dict))
+    output = config(
+        experiment_args=experiment(yaml_dict),
+        chunk_args=chunk(yaml_dict),
+        remove_plate_args=remove_plate(yaml_dict),
+        add_plate_args=add_plate(yaml_dict),
+        create_command_args=create_commands(yaml_dict),
+        microscope=get_microscope(yaml_dict)
+    )
+    return output
 

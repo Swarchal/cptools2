@@ -113,7 +113,12 @@ def make_qsub_scripts(commands_location, commands_count_dict, logfile_location):
         tasks=n_tasks,
         output=os.path.join(logfile_location, "analysis")
     )
-    analysis_script.loop_through_file(cmd_path["cp_commands"])
+    analysis_script += "module load singularity"
+    analysis_script += 'CP_CONTAINER="HPC_projets/CPCB-AI/singularity_containers/cellprofier_319.simg"'
+    analysis_script.loop_through_file(
+        cmd_path["cp_commands"],
+        prefix="singularity exec $CP_CONTAINER"
+    )
     analysis_loc = os.path.join(commands_location,
                                 "{}_analysis_script.sh".format(time_now))
     analysis_script += make_logfile_text(logfile_location,

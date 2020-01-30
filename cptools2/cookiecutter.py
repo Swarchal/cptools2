@@ -150,7 +150,7 @@ class SGEScript(object):
         self.template = self.template + textwrap.dedent("{}\n".format(right_side))
         return self
 
-    def loop_through_file(self, input_file):
+    def loop_through_file(self, input_file, prefix=None):
         """
         Add text to script template to loop through a file containing a
         command to be run on each line.
@@ -188,13 +188,24 @@ class SGEScript(object):
             err_msg = "'tasks` was not set, and cannot read {}".format(input_file)
             raise ScriptError(err_msg)
         # one way of getting the line from `input_file` to match $SGE_TASK_ID
-        text = """
-               SEEDFILE="{input_file}"
-               SEED=$(awk "NR==$SGE_TASK_ID" "$SEEDFILE")
-               $SEED
-               """.format(
-            input_file=input_file
-        )
+        if prefix is None:
+            text = """
+                SEEDFILE="{input_file}"
+                SEED=$(awk "NR==$SGE_TASK_ID" "$SEEDFILE")
+                $SEED
+                """.format(
+                input_file=input_file
+            )
+        else:
+            text = """
+                SEEDFILE="{input_file}"
+                SEED=$(awk "NR==$SGE_TASK_ID" "$SEEDFILE")
+                {prefix} $SEED
+                """.format(
+                input_file=input_file,
+                prefix=prefix
+            )
+
         self.template += textwrap.dedent(text)
 
     def save(self, path):
