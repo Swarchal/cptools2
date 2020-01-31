@@ -40,7 +40,7 @@ def flatten(list_like):
     generator for an un-nested list
     """
     for i in list_like:
-        if isinstance(i, collections.Iterable) and not isinstance(i, str):
+        if isinstance(i, collections.abc.Iterable) and not isinstance(i, str):
             for sub in flatten(i):
                 yield sub
         else:
@@ -121,7 +121,7 @@ def sanitise_filename(filename):
     --------
     string
     """
-    return filename.replace(" ", "\ ")
+    return filename.replace(" ", r"\ ")
 
 
 def make_executable(filepath):
