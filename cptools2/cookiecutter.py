@@ -190,17 +190,17 @@ class SGEScript(object):
         # one way of getting the line from `input_file` to match $SGE_TASK_ID
         if prefix is None:
             text = """
-                SEEDFILE="{input_file}"
-                SEED=$(awk "NR==$SGE_TASK_ID" "$SEEDFILE")
-                $SEED
+                CP_COMMAND_LIST="{input_file}"
+                CP_COMMAND=$(awk "NR==$SGE_TASK_ID" "$CP_COMMAND_LIST")
+                $CP_COMMAND
                 """.format(
                 input_file=input_file
             )
         else:
             text = """
-                SEEDFILE="{input_file}"
-                SEED=$(awk "NR==$SGE_TASK_ID" "$SEEDFILE")
-                {prefix} $SEED
+                CP_COMMAND_LIST="{input_file}"
+                CP_COMMAND=$(awk "NR==$SGE_TASK_ID" "$CP_COMMAND_LIST")
+                {prefix} $CP_COMMAND
                 """.format(
                 input_file=input_file,
                 prefix=prefix
