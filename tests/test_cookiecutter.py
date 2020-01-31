@@ -45,9 +45,9 @@ def test_SGEScript_loop_through_file():
     script_tasks = cookiecutter.SGEScript(user="user", tasks="1-100")
     script_tasks.loop_through_file(input_file="commands.txt")
     output = script_tasks.template.split("\n")
-    assert output[-4] == 'SEEDFILE="commands.txt"'
-    assert output[-3] == 'SEED=$(awk "NR==$SGE_TASK_ID" "$SEEDFILE")'
-    assert output[-2] == "$SEED"
+    assert output[-4] == 'CP_COMMAND_LIST="commands.txt"'
+    assert output[-3] == 'CP_COMMAND=$(awk "NR==$SGE_TASK_ID" "$CP_COMMAND_LIST")'
+    assert output[-2] == "$CP_COMMAND"
     assert "#$ -t 1-100" in output
     assert script_tasks.array is True
 
