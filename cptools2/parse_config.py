@@ -54,9 +54,9 @@ class Config:
 
     def get_add_plate(self):
         if "add plate" in self.config_dict:
-            add_plate_dict = self.config_dict["add plate"]
+            add_plate_dicts = self.config_dict["add plate"]
             # returns a list of dictionaries
-            if isinstance(add_plate_dict, list):
+            if isinstance(add_plate_dicts, list):
                 for d in add_plate_dicts:
                     if experiment in d.keys():
                         # is the experiment label
@@ -109,7 +109,7 @@ class Config:
         return int(chunk_arg)
 
     def create_command_args(self):
-        pipeline = selg.get_pipeline()
+        pipeline = self.get_pipeline()
         location = self.get_location()
         commands_location = self.get_commands_location()
         job_size = self.chunk
