@@ -1,4 +1,4 @@
-experiment : tests/example_dir_yoko/screen-name-batch1_20190213_095340
+experiment : tests/example_dir_yoko/
 chunk: 46
 pipeline: tests/example_pipeline.cppipe
 location: tests/cptools2_runscript_test
