@@ -1,8 +1,6 @@
 import glob
 import os
 
-from cptools2 import utils
-
 
 class Filelist:
     def __init__(self, microscope):

@@ -7,11 +7,8 @@ from __future__ import print_function
 import os
 import textwrap
 from datetime import datetime
-import yaml
 from cptools2 import cookiecutter
 from cptools2 import utils
-from cptools2 import colours
-from cptools2.colours import pretty_print
 
 
 def make_command_paths(commands_location):

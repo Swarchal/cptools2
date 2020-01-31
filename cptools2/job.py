@@ -148,7 +148,7 @@ class Job(object):
         pretty_print("creating image list")
         if self.has_loaddata is False:
             self._create_loaddata(job_size)
-        cp_commands, rsync_commands, rm_commands = [], [], []
+        cp_commands = []
         pretty_print("creating output directories at {}".format(colours.yellow(location)))
         commands.make_output_directories(location=location)
         # for each job per plate, create loaddata and commands
@@ -162,22 +162,19 @@ class Job(object):
             for job_num, dataframe in enumerate(self.loaddata_store[plate]):
                 name = "{}_{}".format(plate, str(job_num))
                 output_loc = os.path.join(location, "raw_data", name)
-                img_list = list(utils.flatten(self.plate_store[plate][1][job_num]))
-                filelist_name = os.path.join(location, "filelist", name)
-                img_location = os.path.join(location, "img_data", name)
-                plate_loc = self.plate_store[plate][0]
-                # make sure filepath has a leading forward-slash and remove
-                # the actual plate name or otherwise the rsync commands ends
-                # with the plate-name duplicated
-                plate_loc = os.path.join("/", *plate_loc.split(os.sep)[:-1])
                 # append cp commands
-                cp_cmnd = commands.make_cp_cmnd(name=name, pipeline=pipeline,
-                                                location=location,
-                                                output_loc=output_loc)
+                cp_cmnd = commands.make_cp_cmnd(
+                    name=name, pipeline=pipeline,
+                    location=location,
+                    output_loc=output_loc
+                )
                 cp_commands.append(cp_cmnd)
                 # write loaddata csv to disk
-                commands.write_loaddata(name=name, location=location,
-                                        dataframe=dataframe)
+                commands.write_loaddata(
+                    name=name,
+                    location=location,
+                    dataframe=dataframe
+                )
         # write commands to disk as a txt file
         pretty_print("creating image filelist")
         pretty_print("creating csv files for LoadData")

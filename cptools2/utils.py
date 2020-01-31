@@ -1,6 +1,5 @@
 import os
 import collections
-import random
 
 
 def make_dir(directory):

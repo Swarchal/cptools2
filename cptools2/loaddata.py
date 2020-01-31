@@ -2,8 +2,6 @@
 Create dataframes/csv-files for CellProfiler's LoadData module
 """
 
-import textwrap
-
 import pandas as _pd
 from cptools2 import utils
 from cptools2 import parse_metadata

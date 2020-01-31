@@ -1,7 +1,7 @@
 import os
-import pandas as pd
 from cptools2 import splitter
 from cptools2 import filelist
+
 
 # need to have an image list
 CURRENT_PATH = os.path.dirname(__file__)

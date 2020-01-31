@@ -20,7 +20,7 @@ class Config:
         return config_dict
 
     def check_config(self):
-        valid_args = set(
+        valid_args = set([
             "experiment",
             "chunk",
             "pipeline",
@@ -29,7 +29,7 @@ class Config:
             "remove plate",
             "add plate",
             "microscope"
-        )
+        ])
         bad_arguments = []
         for argument in self.config_dict.keys():
             if argument not in valid_args:
@@ -100,13 +100,6 @@ class Config:
             if isinstance(commands_location_arg, list):
                 commands_location_arg = commands_location_arg[0]
         return commands_location_arg
-
-    def get_chunk(self):
-        if "chunk" in self.config_dict:
-            chunk_arg = self.config_dict["chunk"]
-        if isinstance(chunk_arg, list):
-            chunk_arg = chunk_arg[0]
-        return int(chunk_arg)
 
     def create_command_args(self):
         pipeline = self.get_pipeline()
