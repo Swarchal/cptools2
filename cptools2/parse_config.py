@@ -18,7 +18,7 @@ class Config:
 
     def open_yaml(self):
         with open(self.yaml_path, "r") as f:
-            config_dict = yaml.load(f)
+            config_dict = yaml.safe_load(f)
         return config_dict
 
     def check_config(self):
