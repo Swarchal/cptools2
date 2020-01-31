@@ -87,31 +87,31 @@ def cast_dataframe(dataframe, check_nan=True):
     if check_nan is True:
         if utils.any_nan_values(dataframe):
             raise LoadDataError("dataframe contains missing values")
+    expected_rows = dataframe.shape[0] // len(channels)
+    check_dataframe_size(wide_df, expected_rows)
     return wide_df
 
 
-def check_dataframe_size(dataframe, min_rows=None):
+
+def check_dataframe_size(dataframe, expected_rows):
     """
-    check that a dataframe contains at least `min_rows` of data, raise
-    an error if this is not the case.
+    docstring
 
     Parameters:
-    ------------
-    dataframe: pandas.DataFrame
-        dataframe to check
-    min_rows: int (default = None)
-        minimum number of rows the dataframe should contain. If None then
-        an Error will never be raised.
+    -----------
+    dataframe
+    expected_rows
 
     Returns:
     --------
-    Raises a `LoadDataError` or nothing
+    nothing, raises RuntimeError
     """
-    nrow = dataframe.shape[0]
-    if nrow < min_rows:
-        msg = """Too few rows detected in a LoadData dataframe. Expected at
-                 least {} rows, actual: {}""".format(min_rows, nrow)
-        raise LoadDataError(textwrap.dedent(msg))
+    nrows_in_dataframe = dataframe.shape[0]
+    if nrows_in_dataframe != expected_rows:
+        msg = "LoadData dataframe has an unexpected number of rows, expected: {}, got: {}"
+        if n_rows in dataframe > expected_rows:
+            msg += "\nDo your images have the same number of z-planes per channel?"
+        raise LoadDataError(msg.format(expected_rows, nrows_in_dataframe))
 
 
 class LoadDataError(Exception):
