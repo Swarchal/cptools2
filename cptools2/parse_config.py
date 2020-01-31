@@ -58,7 +58,7 @@ class Config:
             # returns a list of dictionaries
             if isinstance(add_plate_dicts, list):
                 for d in add_plate_dicts:
-                    if experiment in d.keys():
+                    if "experiment" in d.keys():
                         # is the experiment label
                         experiment = str(d["experiment"])
                     if "plates" in d.keys():
