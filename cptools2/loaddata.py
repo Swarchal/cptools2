@@ -109,7 +109,7 @@ def check_dataframe_size(dataframe, expected_rows):
     nrows_in_dataframe = dataframe.shape[0]
     if nrows_in_dataframe != expected_rows:
         msg = "LoadData dataframe has an unexpected number of rows, expected: {}, got: {}"
-        if n_rows in dataframe > expected_rows:
+        if n_rows_in dataframe > expected_rows:
             msg += "\nDo your images have the same number of z-planes per channel?"
         raise LoadDataError(msg.format(expected_rows, nrows_in_dataframe))
 
