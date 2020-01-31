@@ -9,6 +9,8 @@ class Config:
         self.config_dict = self.open_yaml()
         self.check_config()
         self.experiment = self.get_experiment()
+        self.location = self.get_location()
+        self.commands_location = self.get_commands_location()
         self.chunk = self.get_chunk()
         self.add_plate = self.get_add_plate()
         self.remove_plate = self.get_remove_plate()

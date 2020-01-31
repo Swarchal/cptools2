@@ -3,7 +3,7 @@ import os
 import textwrap
 from cptools2 import generate_scripts
 from cptools2 import job
-from cptools2 import parse_yaml
+from cptools2 import parse_config
 from cptools2 import utils
 from cptools2 import colours
 from cptools2.colours import pretty_print, green
@@ -14,15 +14,6 @@ def check_arguments():
     if len(sys.argv) < 2:
         msg = "missing argument: need to pass a config file as an argument"
         raise ValueError(msg)
-
-
-def get_config_file():
-    """check that the config file exists, raise an error if it doesnt"""
-    config_file = sys.argv[1]
-    if os.path.isfile(config_file) is False:
-        msg = "'{}' is not a file".format(config_file)
-        raise ValueError(msg)
-    return config_file
 
 
 def configure_job(config):
@@ -39,40 +30,39 @@ def configure_job(config):
     ---------
     nothing, saves commands and scripts to disk
     """
-    jobber = job.Job(**config.microscope)
+    jobber = job.Job(config.microscope)
     # some of the optional arguments might be none if that option was not present in the
     # configuration file, in which case don't pass them as arguments to the methods
-    if config.experiment_args is not None:
-        jobber.add_experiment(**config.experiment_args)
-    if config.remove_plate_args is not None:
-        jobber.remove_plate(**config.remove_plate_args)
-    if config.add_plate_args is not None:
-        jobber.add_plate(**config.add_plate_args)
-    if config.chunk_args is not None:
-        jobber.chunk(**config.chunk_args)
-    jobber.create_commands(**config.create_command_args)
+    if config.experiment is not None:
+        jobber.add_experiment(config.experiment)
+    if config.remove_plate is not None:
+        jobber.remove_plate(config.remove_plate)
+    if config.add_plate is not None:
+        jobber.add_plate(**config.add_plate)
+    if config.chunk is not None:
+        jobber.chunk(config.chunk)
+    jobber.create_commands(**config.create_command_args())
 
 
-def make_scripts(config_file):
+def make_scripts(config):
     """
     creates the qsub scripts
 
     Parameters:
     -----------
-    config_file: string
-        path to configuration file
+    config_file: cptools.parse_config.Config
 
     Returns:
     ---------
     nothing
     """
-    yaml_dict = parse_yaml.open_yaml(config_file)
-    config = parse_yaml.parse_config_file(config_file)
-    commands_location = config.create_command_args["commands_location"]
-    commands_line_count = generate_scripts.lines_in_commands(commands_location)
-    logfile_location = os.path.join(yaml_dict["location"], "logfiles")
-    generate_scripts.make_qsub_scripts(commands_location, commands_line_count,
-                                       logfile_location=logfile_location)
+    commands_line_count = generate_scripts.lines_in_commands(config.commands_location)
+    logfile_location = os.path.join(config.location, "logfiles")
+    generate_scripts.make_qsub_scripts(
+       config.commands_location,
+        commands_line_count,
+        logfile_location=logfile_location
+    )
 
 
 def main():
@@ -85,12 +75,12 @@ def main():
     """)))
     check_arguments()
     # parse yaml file into a dictionary
-    config_file = get_config_file()
-    pretty_print("parsing config file {}".format(colours.yellow(config_file)))
-    config = parse_yaml.parse_config_file(config_file)
+    path_to_config = sys.argv[1]
+    config = parse_config.Config(path_to_config)
+    pretty_print("parsing config file {}".format(colours.yellow(path_to_config)))
     configure_job(config)
     pretty_print("creating SGE script")
-    make_scripts(config_file)
+    make_scripts(config)
     pretty_print("DONE!")
 
 
