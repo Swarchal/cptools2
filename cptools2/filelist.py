@@ -105,7 +105,7 @@ class Yokogawa(Micro):
 
     def files_from_plate(self, plate_dir):
         self.check_dir_exists(plate_dir)
-        all_img_files = glob.glob(plate_dir + "/*" + self.ext)
+        all_img_files = glob.glob(plate_dir + "/*/*" + self.ext)
         files = self.clean_filelist(all_img_files)
         self.check_filelist_len(files, plate_dir)
         return files
