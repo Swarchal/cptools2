@@ -47,7 +47,8 @@ def test_create_commands():
         "pipeline" : pipeline_loc,
         "location" : "/example/location",
         "commands_location" : "/home/user",
-        "job_size": 46
+        "job_size": 46,
+        "channel_dict": None,
     }
     assert config.create_command_args() == expected
 

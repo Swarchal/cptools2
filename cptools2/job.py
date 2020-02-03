@@ -100,7 +100,7 @@ class Job(object):
             self.plate_store[key][1] = chunks
         self.chunked = True
 
-    def _create_loaddata(self, job_size=None):
+    def _create_loaddata(self, channel_dict, job_size=None):
         """
         create dictionary store of loaddata modules
         pretty much mirroring self.plate_store but dataframes instead of
@@ -115,7 +115,9 @@ class Job(object):
                     # unnest channel groupings
                     # only there before chunking to keep images together
                     unnested = list(utils.flatten(chunk))
-                    df_loaddata = loaddata.create_loaddata(unnested, self.microscope)
+                    df_loaddata = loaddata.create_loaddata(
+                        unnested, self.microscope, channel_dict
+                    )
                     if index < len(img_list):
                         loaddata.check_dataframe_size(df_loaddata, job_size)
                     self.loaddata_store[key].append(df_loaddata)
@@ -124,11 +126,13 @@ class Job(object):
                 # flatten these nested lists
                 unnested = list(utils.flatten(img_list))
                 # just a single dataframe for the whole imagelist
-                df_loaddata = loaddata.create_loaddata(unnested)
+                df_loaddata = loaddata.create_loaddata(
+                    unnested, self.microscope, channel_dict
+                )
                 self.loaddata_store[key] = df_loaddata
         self.has_loaddata = True
 
-    def create_commands(self, pipeline, location, commands_location, job_size):
+    def create_commands(self, pipeline, location, commands_location, job_size, channel_dict):
         """
         bit of a beast, TODO: refactor
 
@@ -147,7 +151,7 @@ class Job(object):
         """
         pretty_print("creating image list")
         if self.has_loaddata is False:
-            self._create_loaddata(job_size)
+            self._create_loaddata(channel_dict, job_size)
         cp_commands = []
         pretty_print("creating output directories at {}".format(colours.yellow(location)))
         commands.make_output_directories(location=location)

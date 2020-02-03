@@ -1,4 +1,5 @@
 import os
+import collections
 import yaml
 
 
@@ -15,6 +16,7 @@ class Config:
         self.add_plate = self.get_add_plate()
         self.remove_plate = self.get_remove_plate()
         self.microscope = self.get_microscope()
+        self.channels = self.get_channels()
 
     def open_yaml(self):
         with open(self.yaml_path, "r") as f:
@@ -30,7 +32,8 @@ class Config:
             "commands location",
             "remove plate",
             "add plate",
-            "microscope"
+            "microscope",
+            "channels",
         ])
         bad_arguments = []
         for argument in self.config_dict.keys():
@@ -79,6 +82,17 @@ class Config:
     def get_microscope(self):
         return self.config_dict.get("microscope")
 
+    def get_channels(self):
+        channels = self.config_dict.get("channels")
+        if channels is not None:
+            channels = dict(collections.ChainMap(*channels))
+            # if the yaml has no spaces between the hyphen and the channel
+            # numbers then the channel numbers will be parsed as negative
+            # values, so correct this.
+            if any([k < 0 for k in channels.keys()]):
+                channels = {abs(k):v for k,v in channels.items()}
+        return channels
+
     def get_pipeline(self):
         if "pipeline" in self.config_dict:
             pipeline_arg = self.config_dict["pipeline"]
@@ -108,11 +122,13 @@ class Config:
         location = self.get_location()
         commands_location = self.get_commands_location()
         job_size = self.chunk
+        channel_dict = self.channels
         command_args = {
             "pipeline": pipeline,
             "location": location,
             "commands_location": commands_location,
-            "job_size": job_size
+            "job_size": job_size,
+            "channel_dict": channel_dict
         }
         return command_args
 

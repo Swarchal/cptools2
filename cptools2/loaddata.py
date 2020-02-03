@@ -7,7 +7,7 @@ from cptools2 import utils
 from cptools2 import parse_metadata
 
 
-def create_loaddata(img_list, microscope):
+def create_loaddata(img_list, microscope, channel_dict=None):
     """
     create a dataframe suitable for cellprofilers LoadData module
 
@@ -21,7 +21,7 @@ def create_loaddata(img_list, microscope):
     pandas DataFrame
     """
     df_long = create_long_loaddata(img_list, microscope)
-    return cast_dataframe(df_long)
+    return cast_dataframe(df_long, channel_dict)
 
 
 def create_long_loaddata(img_list, microscope):
@@ -44,7 +44,7 @@ def create_long_loaddata(img_list, microscope):
     return df_img
 
 
-def cast_dataframe(dataframe, check_nan=True):
+def cast_dataframe(dataframe, channel_dict=None, check_nan=True):
     """
     reshape a create_loaddata dataframe from long to wide format
 
@@ -54,6 +54,10 @@ def cast_dataframe(dataframe, check_nan=True):
     check_nan: Boolean (default = True)
         whether to raise a warning if the dataframe contains
         any missing values
+    channel_dict: Dict
+        a mapping of channel numbers to channel names from the config
+        file. This is optional and if not present the channels will be
+        labelled after the channel numbers extracted from the metadata.
 
     Returns:
     --------
@@ -76,11 +80,17 @@ def cast_dataframe(dataframe, check_nan=True):
     # rename FileName columns from 1, 2... to FileName_W1, FileName_W2 ...
     columns = {}
     for i in channels:
-        columns[i] = "FileName_W{0}".format(str(i))
+        if channel_dict is None:
+            columns[i] = "FileName_W{0}".format(str(i))
+        else:
+            columns[i] = "FileName_{}".format(channel_dict[i])
     wide_df.rename(columns=columns, inplace=True)
     # duplicate PathName for each channel
     for i in channels:
-        wide_df["PathName_W" + str(i)] = wide_df.path
+        if channel_dict is None:
+            wide_df["PathName_W" + str(i)] = wide_df.path
+        else:
+            wide_df["PathName_{}".format(channel_dict[i])] = wide_df.path
     wide_df.drop(["path"], axis=1, inplace=True)
     if check_nan is True:
         if utils.any_nan_values(dataframe):
@@ -88,7 +98,6 @@ def cast_dataframe(dataframe, check_nan=True):
     expected_rows = dataframe.shape[0] // len(channels)
     check_dataframe_size(wide_df, expected_rows)
     return wide_df
-
 
 
 def check_dataframe_size(dataframe, expected_rows):
