@@ -7,6 +7,7 @@ date: 2020-01-27
 
 import os
 import string
+import re
 from collections import namedtuple
 
 
@@ -19,6 +20,7 @@ class MetadataParser(object):
     """
     def __init__(self, microscope):
         microscope = microscope.strip().lower()
+        # standardise microscope name
         microscope_mapper = {
             "ix": "imagexpress",
             "imagexpress": "imagexpress",
@@ -42,7 +44,7 @@ class MetadataParser(object):
         if microscope not in valid_microscopes:
             err_msg = "unknown microscope, options = {}"
             raise ValueError(err_msg.format(valid_microscopes))
-        # standardise microscope name
+        # get the standardised microscope name
         self.microscope = microscope_mapper[microscope]
         self.parse_func = parser_mapper[self.microscope]
         self.metadata_names = [
@@ -59,14 +61,17 @@ class MetadataParser(object):
 
     @staticmethod
     def get_row(well_str):
+        """return the row integer from a well label"""
         return ord(well_str.lower()[0]) - 96
 
     @staticmethod
     def get_column(well_str):
+        """return the column integer from a well label"""
         return int(well_str[1:])
 
     @staticmethod
     def row_column_to_well(row, column):
+        """convert row and column integers to a well label"""
         letters = string.ascii_uppercase
         return "{}{:02d}".format(letters[row-1], column)
 
@@ -84,6 +89,7 @@ class MetadataParser(object):
             raise RuntimeError()
 
     def parse_ix(self, x):
+        """parse metadata from an MolDev Imagexpress filepath"""
         final_path = os.path.basename(x)
         path = os.path.dirname(x)
         output = namedtuple("ImageXpress", self.metadata_names)
@@ -97,6 +103,7 @@ class MetadataParser(object):
         return output(well, row, column, site, plate, z, channel, path, final_path)
 
     def parse_yokogawa(self, x):
+        """parse metadata from a Yokogawaw CV7000/8000 filepath"""
         output = namedtuple("Yokogawa", self.metadata_names)
         final_path = os.path.basename(x)
         path = os.path.dirname(x)
@@ -109,6 +116,7 @@ class MetadataParser(object):
         return output(well, row, column, site, plate, z, channel, path, final_path)
 
     def parse_opera(self, x):
+        """parse metadata from a PE Opera filepath"""
         output = namedtuple("Opera", self.metadata_names)
         final_path = os.path.basename(x)
         path = os.path.dirname(x)
@@ -128,4 +136,25 @@ class MetadataParser(object):
     def parse_filepath_list(self, filepath_list):
         """generatic extract metadata from a list of filepaths"""
         return [self.parse_func(i) for i in filepath_list]
+
+
+def guess_microscope(filepath):
+    """guess a microscope from a filepath"""
+    regex_dict = {
+        "imagexpress": r"^(.*)_([A-P]{1}[0-9]{2})_(s[0-9]{1}|[0-9]{2})_(w[0-5]{1})(.*)(\.tif|\.tiff)$",
+        "yokogawa": r"^(.*)_([A-Z][0-9]{2})_(T[0-9]{4})(F[0-9]{3})(L[0-9]{2})(A[0-9]{2})(Z[0-9]{2})(C[0-9]{2})(\.tif|\.tiff)$",
+        "opera": r"^([0-9]{6})-([0-9]{1})-([0-9]{9})(\.tif|\.tiff)$",
+    }
+    final_filepath = os.path.basename(filepath)
+    matches = []
+    for microscope, regex in regex_dict.items():
+        regex_match = re.match(regex, final_filepath)
+        if regex_match is not None:
+            matches.append(microscope)
+    if len(matches) != 1:
+        raise RuntimeError(
+            "Failed to guess microscope from filename '{}'".format(filepath)
+        )
+    else:
+        return matches[0]
 
