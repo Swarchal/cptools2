@@ -36,12 +36,12 @@ class Micro:
     def paths_to_plates(self, experiment_directory):
         """
         Return the absolute file path to all plates contained within
-        an ImageXpress experiment directory.
+        an experiment directory.
 
         Parameters:
         -----------
         experiment_directory: string
-            Path to top-level experiment in the ImageXpress directory.
+            Path to top-level experiment in the directory.
             This should contain sub-directories of plates.
 
         Returns:
@@ -55,6 +55,7 @@ class Micro:
             raise RuntimeError(err_msg)
         plates = os.listdir(experiment_directory)
         plate_paths = [os.path.join(exp_abs_path, plate) for plate in plates]
+        # filter out files, return only directories
         return [path for path in plate_paths if os.path.isdir(path)]
 
     @staticmethod
@@ -103,9 +104,43 @@ class Yokogawa(Micro):
     def __init__(self):
         super(Yokogawa, self).__init__()
 
+    def paths_to_plates(self, experiment_directory):
+        """
+        NOTE: Override the generic paths_to_plates method for the yokogawa
+        as we might have plates that have been imaged twice.
+
+        Return the absolute file path to all plates contained within
+        an experiment directory.
+
+        Parameters:
+        -----------
+        experiment_directory: string
+            Path to top-level experiment in the directory.
+            This should contain sub-directories of plates.
+
+        Returns:
+        --------
+        list of fully-formed paths to the plate directories.
+        """
+        exp_abs_path = os.path.abspath(experiment_directory)
+        # check the experiment directory exists
+        if not os.path.isdir(exp_abs_path):
+            err_msg = "'{}' directory not found".format(exp_abs_path)
+            raise RuntimeError(err_msg)
+        plates = os.listdir(experiment_directory)
+        plate_paths = []
+        for plate in plates:
+            plate_path = os.path.join(exp_abs_path, plate)
+            if os.path.isdir(plate_path):
+                for plate_replicate in os.listdir(plate_path):
+                    plate_replicate_path = os.path.join(plate_path, plate_replicate)
+                    if os.listdir(plate_replicate_path):
+                        plate_paths.append(plate_replicate_path)
+        return plate_paths
+
     def files_from_plate(self, plate_dir):
         self.check_dir_exists(plate_dir)
-        all_img_files = glob.glob(plate_dir + "/*/*" + self.ext)
+        all_img_files = glob.glob(plate_dir + "/*" + self.ext)
         files = self.clean_filelist(all_img_files)
         self.check_filelist_len(files, plate_dir)
         return files

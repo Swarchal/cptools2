@@ -1,0 +1,12 @@
+experiment : tests/example_dir_yoko_duplicated_plate
+remove plate:
+    - A000002-PC-repeat
+chunk: 46
+pipeline: tests/example_pipeline.cppipe
+location: tests/cptools2_runscript_test_duplicate_removed
+commands location: tests/cptools2_runscript_test_duplicate_removed
+channels:
+    - 1: "DAPI"
+    - 3: "Actin"
+    - 4: "Mito"
+microscope: yokogawa

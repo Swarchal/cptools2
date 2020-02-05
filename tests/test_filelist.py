@@ -43,7 +43,10 @@ filelister_yoko = filelist.Filelist("yokogawa")
 
 def test_files_from_plate_yoko():
     """see if we get image files from a plate directory"""
-    plate_path = os.path.join(TEST_PATH_YOKO, "screen-name-batch1_20190213_095340")
+    plate_path = os.path.join(
+       TEST_PATH_YOKO,
+        "screen-name-batch1_20190213_095340/A000002-PC"
+    )
     output = filelister_yoko.files_from_plate(plate_path)
     assert len(output) > 0
     for f in output:
@@ -58,7 +61,7 @@ def test_paths_to_plates():
     """
     output = filelister_yoko.paths_to_plates(TEST_PATH_YOKO)
     prefix = os.path.abspath(TEST_PATH_YOKO)
-    plate_names = ["screen-name-batch1_20190213_095340"]
+    plate_names = ["screen-name-batch1_20190213_095340/A000002-PC"]
     make_own = [os.path.join(prefix, name) for name in plate_names]
     assert len(output) == len(plate_names)
     for ans in output:

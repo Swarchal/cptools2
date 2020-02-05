@@ -65,7 +65,7 @@ def test_create_loaddata_ix():
 TEST_PATH_YOKO = os.path.join(CURRENT_PATH, "example_dir_yoko")
 TEST_PATH_PLATE_1_YOKO = os.path.join(
     TEST_PATH_YOKO,
-    "screen-name-batch1_20190213_095340"
+    "screen-name-batch1_20190213_095340/A000002-PC"
 )
 filelister_yoko = filelist.Filelist("yokogawa")
 IMG_LIST_YOKO = filelister_yoko.files_from_plate(TEST_PATH_PLATE_1_YOKO)

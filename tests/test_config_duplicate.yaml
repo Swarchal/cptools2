@@ -1,0 +1,10 @@
+experiment : tests/example_dir_yoko_duplicated_plate
+chunk: 46
+pipeline: tests/example_pipeline.cppipe
+location: tests/cptools2_runscript_test_duplicate
+commands location: tests/cptools2_runscript_test_duplicate
+channels:
+    - 1: "DAPI"
+    - 3: "Actin"
+    - 4: "Mito"
+microscope: yokogawa
