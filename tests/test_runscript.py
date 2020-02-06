@@ -10,6 +10,13 @@ def test_run_cptools2():
     )
     assert return_val == 0
 
+def test_run_cptools2_config_with_underscores():
+    config_path = os.path.join(CURRENT_PATH, "test_config3.yaml")
+    return_val = subprocess.call(
+        ["env", "SGE_CLUSTER_NAME=idrs", "cptools2", config_path]
+    )
+    assert return_val == 0
+
 def test_run_cptools2_duplicate_plate():
     config_path = os.path.join(CURRENT_PATH, "test_config_duplicate.yaml")
     return_val = subprocess.call(

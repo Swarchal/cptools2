@@ -21,7 +21,11 @@ class Config:
     def open_yaml(self):
         with open(self.yaml_path, "r") as f:
             config_dict = yaml.safe_load(f)
-        return config_dict
+        standardised_config = dict()
+        for key, value in config_dict.items():
+            standard_key = self.standardise_name(key)
+            standardised_config[standard_key] = value
+        return standardised_config
 
     def check_config(self):
         valid_args = set([
@@ -131,6 +135,10 @@ class Config:
             "channel_dict": channel_dict
         }
         return command_args
+
+    @staticmethod
+    def standardise_name(name):
+        return name.strip().replace("_", " ")
 
     def parse(self):
         raise NotImplementedError()
