@@ -1,3 +1,4 @@
+import argparse
 import sys
 import os
 import textwrap
@@ -6,6 +7,7 @@ from cptools2 import job
 from cptools2 import parse_config
 from cptools2 import utils
 from cptools2 import colours
+from cptools2 import template
 from cptools2.colours import pretty_print, green
 
 
@@ -67,6 +69,13 @@ def make_scripts(config):
 
 def main():
     """run cptools.job.Job on a yaml file containing arguments"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--template", action="store_true")
+    args, unknown = parser.parse_known_args()
+    if args.template:
+        # print out template and exit
+        template.print_template()
+        sys.exit(0)
     print(green(textwrap.dedent("""\
       ___ ___ _____ ___   ___  _    ___ ___
      / __| _ \_   _/ _ \ / _ \| |  / __|_  )
